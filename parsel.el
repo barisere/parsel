@@ -140,8 +140,6 @@ describe('Geofence construction tests', () => {
     '(:open-bracket "("))
   )
 
-(parsec-with-input "()describe()" (open-paren))
-
 (defun close-paren ()
   (unless (parsec-error-p (parsec-one-of ?\)))
     '(:close-bracket ")"))
@@ -151,15 +149,11 @@ describe('Geofence construction tests', () => {
   (unless (parsec-error-p (parsec-re "[[:blank:][:space:]]*describe("))
     '(:describe)))
 
-(parsec-with-input "describe(\")" (describe-stanza))
-
 (defun test-stanza ()
   (unless (parsec-error-p (parsec-or
                            (parsec-re "[[:blank:][:space:]]*it(")
                            (parsec-re "[[:blank:][:space:]]*test(")))
     '(:test)))
-
-(parsec-with-input "  test(\")" (test-stanza))
 
 (defun stanza ()
   (parsec-or (describe-stanza) (test-stanza)))
@@ -191,8 +185,6 @@ describe('Geofence construction tests', () => {
     (:start `((parsec-or (parse-test-name) (eof)) 0))
     )
   )
-
-(parser-state '(:close-bracket "title") 0)
 
 (defun run-parse ()
   (interactive)
@@ -243,13 +235,14 @@ describe('Geofence construction tests', () => {
     )
   )
 
-(parsec-with-input test-input
-  (let* ((test-names (reverse (run-parse)))
-         (choices (seq-map-indexed
-                   (lambda (item idx) `(,item ,idx))
-                   test-names))
-         (choice (widget-choose "Select test to run: " choices))
-         )
-    (message "You chose to run '%s'" (car (rassoc choice choices)))
-    )
- )
+;; (load (expand-file-name "parsel.elc"))
+;; (parsec-with-input test-input
+;;   (let* ((test-names (nreverse (run-parse)))
+;;          (choices (seq-map-indexed
+;;                    (lambda (item idx) `(,item ,idx))
+;;                    test-names))
+;;          (choice (widget-choose "Select test to run: " choices))
+;;          )
+;;     (message "You chose to run '%s'" (car (rassoc choice choices)))
+;;     )
+;;  )
